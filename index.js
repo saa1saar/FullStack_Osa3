@@ -69,17 +69,17 @@ let persons = [
     )
 // The post functionality
   app.post('/api/persons', (request, response) => {
-    const body = request.body
+    const {name, number} = request.body
   
-    if (!body.content) {
+    if (!name || !number) {
       return response.status(400).json({ 
-        error: 'content missing' 
-      })
+        error: 'Nimi ja/tai numero puuttuvat' 
+      }).end()
     }
   
     const person = {
-      content: body.content,
-      important: body.important || false,
+      name,
+      number,
       id: generateId(),
     }
   

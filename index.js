@@ -34,6 +34,7 @@ let persons = [
   app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
   })
+
   
   app.get('/api/persons', (request, response) => {
     response.json(persons)
@@ -57,6 +58,17 @@ let persons = [
     return String(maxId + 1)
   }
   
+  app.get('/info', (request, response) => {
+    const kaikki = persons.length
+
+    response.send(
+        `<p>Puhelinnluettelossa on ${kaikki} yhteistietoa!</p>`+
+        `<p>${new Date()}</p>`
+    )
+  }
+
+    )
+
   app.post('/api/persons', (request, response) => {
     const body = request.body
   

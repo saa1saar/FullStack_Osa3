@@ -67,7 +67,7 @@ let persons = [
   }
 
     )
-
+// The post functionality
   app.post('/api/persons', (request, response) => {
     const body = request.body
   
@@ -87,7 +87,7 @@ let persons = [
   
     response.json(person)
   })
-
+  //The delete funcionality
   app.delete('/api/persons/:id', (request, response) => {
     const id = request.params.id
     persons = persons.filter(person => person.id !== id)

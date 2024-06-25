@@ -2,13 +2,17 @@ const express = require('express')
 var morgan = require('morgan')
 
 const app = express()
+const cors = require('cors')
 
 app.use(express.json())
+app.use(express.static('dist'))
 
 app.use(morgan('combined'))
-
 morgan.token('request-body', (req) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :request-body'))
+
+app.use(cors())
+app.use(express.static('public'))
 
 let persons = [
     { 
@@ -109,7 +113,7 @@ let persons = [
   app.use(unknownEndpoint)
 
 
-  const PORT = 3001
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
-  })
+  const PORT = process.env.PORT || 3001
+    app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})

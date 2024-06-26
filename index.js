@@ -36,84 +36,85 @@ let persons = [
     "id": "4"
     },
     { 
-        "name": "Salli Saarinen", 
-        "number": "044-123-4567",
-        "id": "5"
-        } 
+    "name": "Salli Saarinen", 
+    "number": "044-123-4567",
+    "id": "5"
+    } 
       
 ]
-  app.get('/', function (req, res) {
-  res.send('hello, world!')
-    })
-    
-  app.get('/api/persons', (request, response) => {
-    response.json(persons)
+app.get('/', function (request, response) {
+response.send('hello, world!')
   })
-
-  app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find(person => person.id === id)
-    
-    if (person) {
-        response.json(person)
-      } else {
-        response.status(404).end()
-      }
-  })
-
-  const generateId = () => {
-    const maxId = persons.length > 0
-      ? Math.max(...persons.map(n => Number(n.id)))
-      : 0
-    return String(maxId + 1)
-  }
   
-  app.get('/info', (request, response) => {
-    const kaikki = persons.length
+app.get('/api/persons', (request, response) => {
+  response.json(persons)
+})
 
-    response.send(
-        `<p>Puhelinnluettelossa on ${kaikki} yhteistietoa!</p>`+
-        `<p>${new Date()}</p>`
-    )
-  }
+app.get('/api/persons/:id', (request, response) => {
+  const id = request.params.id
+  const person = persons.find(person => person.id === id)
+  
+  if (person) {
+      response.json(person)
+    } else {
+      response.status(404).end()
+    }
+})
 
-    )
+const generateId = () => {
+  const maxId = persons.length > 0
+    ? Math.max(...persons.map(n => Number(n.id)))
+    : 0
+  return String(maxId + 1)
+}
+
+app.get('/info', (request, response) => {
+  const kaikki = persons.length
+
+  response.send(
+      `<p>Puhelinnluettelossa on ${kaikki} yhteistietoa!</p>`+
+      `<p>${new Date()}</p>`
+  )
+}
+
+  )
 // The post functionality
-  app.post('/api/persons', (request, response) => {
-    const {name, number} = request.body
-  
-    if (!name || !number) {
-      return response.status(400).json({ 
-        error: 'Nimi ja/tai numero puuttuvat' 
-      }).end()
-    }
-  
-    const person = {
-      name,
-      number,
-      id: generateId(),
-    }
-  
-    persons = persons.concat(person)
-  
-    response.json(person)
-  })
-  //The delete funcionality
-  app.delete('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    persons = persons.filter(person => person.id !== id)
-  
-    response.status(204).end()
-  })
-  
-  const unknownEndpoint = (request, response) => {
-    response.status(404).send({ error: 'unknown endpoint' })
+app.post('/api/persons', (request, response) => {
+  const {name, number} = request.body
+
+  if (!name || !number) {
+    return response.status(400).json({ 
+      error: 'Nimi ja/tai numero puuttuvat' 
+    }).end()
   }
   
-  app.use(unknownEndpoint)
+  const person = {
+    name,
+    number,
+    id: generateId(),
+  }
+
+  persons = persons.concat(person)
+
+  response.status(201).send(persons)
+})
+
+//The delete funcionality
+app.delete('/api/persons/:id', (request, response) => {
+  const id = request.params.id
+  persons = persons.filter(person => person.id !== id)
+
+  response.status(204).end()
+})
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
 
 
-  const PORT = process.env.PORT || 3001
-    app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+console.log(`Server running on port ${PORT}`)
 })

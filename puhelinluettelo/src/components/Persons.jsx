@@ -1,19 +1,17 @@
-const PersonForm = ({addPerson, newName, newNumber, setNewName, setNewNumber }) => {
+const Persons = ({ persons, removePerson }) => {
     return (
-      <form onSubmit={addPerson}>
-        <div>
-          name: 
-          <input value={newName} onChange={({ target }) => setNewName(target.value)} />
-        </div>
-        <div>
-          number: 
-          <input value={newNumber} onChange={({ target }) => setNewNumber(target.value)} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <div>
+        {persons.map(person =>
+          <p key={person.id}>
+            {person.name} {person.number}
+            <button onClick={() => removePerson(person)}>
+              delete
+            </button>
+          </p>
+        )}
+      </div>
     )
   }
   
-  export default PersonForm
+  export default Persons
+  

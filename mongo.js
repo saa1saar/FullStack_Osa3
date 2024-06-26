@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 if (process.argv.length<3) {
-  console.log('give: node mongo.js <password> [<name>] [<number>]')
+  console.log('Kirjaa: node mongo.js <password> [<nimi>] [<numero>]')
   process.exit(1)
 }
 
@@ -21,11 +21,21 @@ const personSchema = new mongoose.Schema({
 const Person = mongoose.model('Person', personSchema)
 
 const person = new Person({
-  name: 'Nancy T.',
-  number: '0340123456',
+  name: process.argv[3],
+  number: process.argv[4]
 })
 
-person.save().then(result => {
-  console.log('Person saved!')
-  mongoose.connection.close()
-})
+if (process.argv.length === 5) {
+    person.save().then(result => {
+        console.log(`${result.name} lisättiin numerolla: ${result.number} puhelinluetteloon!`)
+        mongoose.connection.close()
+    })
+} else if (process.argv.length === 3) {
+    Person.find({}).then(result => {
+        console.log('Puhelinluettelo:')
+        result.forEach(person => {
+            console.log(person.name, person.number)
+        })
+        mongoose.connection.close()
+    })
+}

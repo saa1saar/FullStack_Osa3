@@ -76,15 +76,15 @@ app.get('/api/persons/:id', (request, response) => {
 }*/
 
 app.get('/info', (request, response) => {
-  const kaikki = person.length
-
-  response.send(
-      `<p>Puhelinnluettelossa on ${kaikki} yhteistietoa!</p>`+
-      `<p>${new Date()}</p>`
-  )
-}
-
-  )
+  Person
+  .countDocuments({})
+  .then(count => {
+      response.send(
+          `<p>Phonebook has info for ${count} people.</p> <p>${new Date()}</p> `
+      )
+  })
+  .catch(error => next(error))
+})
 // The post functionality
 app.post('/api/persons', (request, response) => {
   const body = request.body

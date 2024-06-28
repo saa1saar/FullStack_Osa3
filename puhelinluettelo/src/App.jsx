@@ -27,7 +27,7 @@ const App = () => {
 
     setTimeout(() => {
       setInfo({ message: null} )
-    }, 3000)
+    }, 5000)
   }
 
   const cleanForm = () => {
@@ -61,16 +61,20 @@ const App = () => {
       return
     }
 
-    personService.create({
+    personService
+      .create({
       name: newName,
       number: newNumber
-    }).then(createdPerson => {
+      })
+      .then(createdPerson => {
       setPersons(persons.concat(createdPerson))
-
       notifyWith(`${createdPerson.name} added!`)
-
       cleanForm()
-    })
+      })
+      .catch(error => {
+        console.log(error.response.data)
+        const missingThings = JSON.stringify(error.response.data)
+        notifyWith(missingThings)})
   }
 
   const removePerson = (person) => {

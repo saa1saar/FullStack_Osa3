@@ -51,7 +51,7 @@ response.send('hello, world!')
   
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(person => {
-  response.json(persons)
+  response.json(person)
   })
 })
 

@@ -56,25 +56,27 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  const person = persons.find(person => person.id === id)
-  
-  if (person) {
-      response.json(person)
-    } else {
-      response.status(404).end()
-    }
+  Person
+    .findById(request.params.id)
+    .then(person => {
+        if (person) {
+            response.json(person)
+        } else {
+            response.status(404).end()
+        }
+    })
+    .catch(error => next(error))
 })
 
-const generateId = () => {
-  const maxId = persons.length > 0
-    ? Math.max(...persons.map(n => Number(n.id)))
+/*const generateId = () => {
+  const maxId = person.length > 0
+    ? Math.max(...person.map(n => Number(n.id)))
     : 0
   return String(maxId + 1)
-}
+}*/
 
 app.get('/info', (request, response) => {
-  const kaikki = persons.length
+  const kaikki = person.length
 
   response.send(
       `<p>Puhelinnluettelossa on ${kaikki} yhteistietoa!</p>`+
@@ -85,31 +87,32 @@ app.get('/info', (request, response) => {
   )
 // The post functionality
 app.post('/api/persons', (request, response) => {
-  const {name, number} = request.body
+  const body = request.body
 
-  if (!name || !number) {
-    return response.status(400).json({ 
-      error: 'Nimi ja/tai numero puuttuvat' 
-    }).end()
-  }
-  
-  const person = {
-    name,
-    number,
-    id: generateId(),
-  }
+  const person = new Person({
+      name: body.name,
+      number: body.number
+  })
 
-  persons = persons.concat(person)
+  person.save()
+      .then(savedPerson => {
+        response.json(savedPerson)})
+      .catch(error => next(error))
 
-  response.status(201).send(persons)
 })
 
 //The delete funcionality
 app.delete('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  persons = persons.filter(person => person.id !== id)
-
-  response.status(204).end()
+  Person
+    .findByIdAndDelete(request.params.id)
+    .then(person => {
+        if (person) {
+            response.status(204).end()
+        } else {
+            response.status(404).end()
+        }
+    })
+    .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {

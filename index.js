@@ -3,7 +3,9 @@ var morgan = require('morgan')
 require('dotenv').config()
 const Person = require('./models/person')
 
-const app = express()
+const app = require('./app')
+const config = require('./utils/config')
+const logger = require('./utils/logger')
 const cors = require('cors')
 
 app.use(express.json())
@@ -156,10 +158,11 @@ app.use(unknownEndpoint)
 
 const PORT = process.env.PORT || 3001
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+app.listen(config.PORT, () => {
+  logger.info(`Server running on port ${config.PORT}`)
+})
 
-  const errorHandler = (error, request, response, next) => {
+const errorHandler = (error, request, response, next) => {
     console.error(error.message)
 
     if (error.name === 'CastError') {
@@ -171,5 +174,4 @@ app.listen(PORT, () => {
     next(error)
   }
 
-  app.use(errorHandler)
-})
+app.use(errorHandler)
